@@ -1,0 +1,11 @@
+{
+  "service": {
+    "photos_dir": "photos",
+    "server": {
+      "batch_size": 100,
+      "timeout": 10,
+      "data_send_interval": 0.1,
+      "heartbeat_interval": 5
+    }
+  }
+}

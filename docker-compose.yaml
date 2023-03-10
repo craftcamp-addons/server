@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  nats:
+    image: nats:alpine3.17
+    ports:
+      - "4222:4222"
+      - "4223:4223"
+      - "8222:8222"
+    command: "--server_name hub -js --http_port 8222 -c /etc/nats/ws.conf"
+    volumes:
+      - ./nats:/etc/nats
+  database:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=potsgrpwparsng
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4:6.21
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "8004:80"
+  server:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    command: "python service"
+    volumes:
+      - ./backend:/app/backend/
+#      - ./configs/server.json:/app/backend/settings.json
+    #    restart: unless-stopped
+    depends_on:
+      - database
+      - nats
+  web:
+      build:
+        context: backend
+        dockerfile: Dockerfile
+      #    restart: unless-stopped
+      command: "python web"
+      ports:
+        - "8009:5555"
+      volumes:
+        - ./backend:/app/backend/
+#        - ./configs/web.json:/app/backend/settings.json
+      depends_on:
+        - database
+        - nats
+  frontend:
+      build: frontend
+      ports:
+        - "8010:80"
+      volumes:
+        - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+      environment:
+        NODE_ENV: production
+      depends_on:
+        - nats
+        - database
+#  grafana:
+#    image: grafana/grafana-oss:latest

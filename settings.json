@@ -1,0 +1,36 @@
+{
+  "service": {
+    "photos_dir": "photos",
+    "server": {
+      "batch_size": 100,
+      "timeout": 10,
+      "data_send_interval": 0.1,
+      "heartbeat_interval": 5
+    },
+    "mq_url": "nats"
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres",
+    "password": "potsgrpwparsng",
+    "database": "parsing",
+    "url": "postgresql+asyncpg://postgres:potsgrpwparsng@localhost:5432"
+  },
+  "web": {
+    "debug": true,
+    "host": "0.0.0.0",
+    "port": 8009
+  },
+  "logging": {
+    "level": "DEBUG",
+    "format": "%(asctime)s - %(name)-12s - %(levelname)-8s - %(message)s",
+    "datefmt": "%Y-%m-%d %H:%M:%S",
+    "ignored": [
+      "aiosqlite",
+      "aiogram.dispatcher",
+      "multipart"
+    ],
+    "file": "logs.log"
+  }
+}
